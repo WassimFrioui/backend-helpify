@@ -1,5 +1,7 @@
 package com.homebooking.home_services.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +11,9 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -23,10 +28,13 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
             // Disable CSRF using new recommended approach
             .csrf(AbstractHttpConfigurer::disable)
+
+            // Enable CORS using the custom configuration
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
             // Configure authorization
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/register", "/auth/login").permitAll() // Permet l'accès public
+                .requestMatchers("/auth/**").permitAll() // Permet l'accès public
                 .requestMatchers("http://localhost:3000").permitAll()
                 .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                 .requestMatchers("/enterprises/**").permitAll() // Autorise l'accès public aux entreprises
@@ -44,6 +52,7 @@ public class SecurityConfig implements WebMvcConfigurer {
             
             // Disable frame options for H2 console (if needed)
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+            
 
         return http.build();
     }
@@ -52,15 +61,29 @@ public class SecurityConfig implements WebMvcConfigurer {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    // CORS Configuration
+    
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
-        registry.addMapping("/**") // Permet l'accès à toutes les routes
-                .allowedOrigins("http://localhost:3000") // Permet les requêtes depuis localhost:3000
-                .allowedOriginPatterns("http://localhost:3000/**") // Permet les requêtes depuis localhost:3000
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Permet ces méthodes HTTP
-                .allowedHeaders("*") // Permet tous les en-têtes
-                .allowCredentials(true); // Autorise les informations d'identification (cookies, en-têtes d'authentification, etc.)
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000", "http://192.168.1.50:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
+    
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // frontend origin
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true); // 🔥 important pour les cookies
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }
     

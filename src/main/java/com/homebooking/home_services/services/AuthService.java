@@ -2,15 +2,14 @@ package com.homebooking.home_services.services;
 
 import com.homebooking.home_services.dto.AuthDTO;
 import com.homebooking.home_services.dto.UserDTO;
+import com.homebooking.home_services.models.User;
+import com.homebooking.home_services.models.E_Role;
+import com.homebooking.home_services.repositories.UserRepository;
+import com.homebooking.home_services.mappers.UserMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.homebooking.home_services.models.User;
-import com.homebooking.home_services.repositories.UserRepository;
-import com.homebooking.home_services.mappers.UserMapper;
-import java.util.Optional;
-import com.homebooking.home_services.models.E_Role;
 
 @Service
 public class AuthService {
@@ -24,11 +23,14 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtService jwtService; // ✅ Injecte JwtService
+
     public UserDTO register(AuthDTO authDTO) {
         if (userRepository.existsByMail(authDTO.getMail())) {
             throw new RuntimeException("Email déjà utilisé");
         }
-        if ( authDTO.getPassword().length() < 8) {
+        if (authDTO.getPassword().length() < 8) {
             throw new RuntimeException("Le mot de passe doit contenir au moins 8 caractères");
         }
 
@@ -36,7 +38,6 @@ public class AuthService {
         user.setFirstname(authDTO.getFirstname());
         user.setLastname(authDTO.getLastname());
         user.setAddress(authDTO.getAddress());
-        
         user.setPhone(authDTO.getPhone());
         user.setMail(authDTO.getMail());
         user.setPassword(passwordEncoder.encode(authDTO.getPassword()));
@@ -53,6 +54,8 @@ public class AuthService {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        return "Connexion réussie";
+        // ✅ Générer un token JWT
+        String token = jwtService.generateToken(user);
+        return token;
     }
 }
