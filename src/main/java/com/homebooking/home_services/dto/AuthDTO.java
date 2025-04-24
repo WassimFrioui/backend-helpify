@@ -15,6 +15,6 @@ public class AuthDTO {
     private String mail;
     private String phone;
     private String address;
-    private String password; // Added password field for authentication
-    private String token; // Added token field for authentication
+    private String password; 
+    private String token; 
 }

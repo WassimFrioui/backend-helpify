@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    List<Employee> findByEnterpriseId(Long enterpriseId); // Méthode pour trouver les employés par ID d'entreprise
-    List<Employee> findByUserId(Long userId); // Méthode pour trouver les employés par ID d'utilisateur
+    List<Employee> findByEnterpriseId(Long enterpriseId); 
+    List<Employee> findByUserId(Long userId); 
 }

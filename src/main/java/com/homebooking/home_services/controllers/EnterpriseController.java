@@ -30,7 +30,7 @@ public class EnterpriseController {
         return ResponseEntity.ok(enterpriseService.getAll());
     }
 
-    @GetMapping("/owner/{ownerId}")
+    @GetMapping("/owner/{ownerId}") // Endpoint pour obtenir les entreprises par ID de propriétaire
     public ResponseEntity<List<EnterpriseDTO>> getByOwnerId(@PathVariable Long ownerId) {
         return ResponseEntity.ok(enterpriseService.getByOwnerId(ownerId));
     }
@@ -51,7 +51,7 @@ public class EnterpriseController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/owner")
+    @GetMapping("/{id}/owner") // Endpoint pour obtenir l'ID du propriétaire
     public ResponseEntity<Long> getOwner(@PathVariable Long id) {
         return ResponseEntity.ok(enterpriseService.getOwnerId(id));
     }

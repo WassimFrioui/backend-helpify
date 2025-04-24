@@ -9,7 +9,7 @@ public enum E_Status {
     
     @JsonCreator
     public static E_Status fromString(String value) {
-        return E_Status.valueOf(value.split("\\.")[1]);  // Extrait la partie après le "."
+        return E_Status.valueOf(value.split("\\.")[1]);  
     }
 }
 

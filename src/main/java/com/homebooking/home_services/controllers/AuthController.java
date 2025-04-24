@@ -49,10 +49,9 @@ public class AuthController {
 
         System.out.println("TOKEN: [" + token + "]");
 
-        // ✅ Cookie propre avec ResponseCookie
         ResponseCookie cookie = ResponseCookie.from("auth_token", token)
                 .httpOnly(true)
-                .secure(false) // ← à mettre true en prod avec HTTPS
+                .secure(false)
                 .path("/")
                 .sameSite("Strict")
                 .maxAge(Duration.ofDays(1))
@@ -65,7 +64,6 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        // ✅ Supprime proprement le cookie
         ResponseCookie cookie = ResponseCookie.from("auth_token", "")
                 .httpOnly(true)
                 .secure(false) // true en prod

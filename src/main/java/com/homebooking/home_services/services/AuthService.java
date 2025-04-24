@@ -24,7 +24,7 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtService jwtService; // ✅ Injecte JwtService
+    private JwtService jwtService; 
 
     public UserDTO register(AuthDTO authDTO) {
         if (userRepository.existsByMail(authDTO.getMail())) {
@@ -54,7 +54,7 @@ public class AuthService {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        // ✅ Générer un token JWT
+        
         String token = jwtService.generateToken(user);
         return token;
     }

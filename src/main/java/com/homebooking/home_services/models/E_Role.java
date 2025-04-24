@@ -10,7 +10,7 @@ public enum E_Role {
     
     @JsonCreator
     public static E_Role fromString(String value) {
-        return E_Role.valueOf(value.split("\\.")[1]);  // Extrait la partie après le "."
+        return E_Role.valueOf(value.split("\\.")[1]);  
     }
 }
 
