@@ -35,7 +35,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/auth/**").permitAll() // Permet l'accès public
                 .requestMatchers("http://localhost:3000").permitAll()
                 .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                .requestMatchers("/enterprises/**").permitAll() 
+                .requestMatchers("/enterprises/**", "enterprises").permitAll() 
                 .requestMatchers("/employees/**").permitAll() 
                 .requestMatchers("/users/**").permitAll() 
 
